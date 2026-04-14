@@ -143,7 +143,6 @@ def reroll(player):
 
 async def send_boards(game, user_id, prefix=""):
     p = game["players"][user_id]
-    opp_id = other(game, user_id)
     own = render(p, show_ships=True)
     enemy = render(p, show_ships=False)
     text = (
