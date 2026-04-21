@@ -98,12 +98,13 @@ def render(player, show_ships):
     show_ships=True: own field (ships + incoming shots).
     show_ships=False: enemy field (your outgoing shots only).
     """
-    # ASCII table keeps Telegram <pre> alignment predictable.
-    header = "   |" + "|".join(f" {letter} " for letter in LETTERS) + "|"
-    separator = "   +" + "---+" * FIELD
-    rows = [header, separator]
+    header = "     " + "  ".join(LETTERS)
+    top = "   ┌" + "───┬" * (FIELD - 1) + "───┐"
+    middle = "   ├" + "───┼" * (FIELD - 1) + "───┤"
+    bottom = "   └" + "───┴" * (FIELD - 1) + "───┘"
+    rows = [header, top]
     for y in range(FIELD):
-        row = [f"{y + 1:>2} |"]
+        row = [f"{y + 1:>2} │"]
         for x in range(FIELD):
             cell = (x, y)
             if show_ships:
@@ -111,22 +112,22 @@ def render(player, show_ships):
                 hit = cell in player["incoming_hits"]
                 miss = cell in player["incoming_misses"]
                 if hit:
-                    row.append(f" {CELL_HIT} |")
+                    row.append(f" {CELL_HIT} │")
                 elif miss:
-                    row.append(f" {CELL_MISS} |")
+                    row.append(f" {CELL_MISS} │")
                 elif in_ship:
-                    row.append(f" {CELL_SHIP} |")
+                    row.append(f" {CELL_SHIP} │")
                 else:
-                    row.append(f" {CELL_UNKNOWN} |")
+                    row.append(f" {CELL_UNKNOWN} │")
             else:
                 if cell in player["shots_hit"]:
-                    row.append(f" {CELL_HIT} |")
+                    row.append(f" {CELL_HIT} │")
                 elif cell in player["shots_miss"]:
-                    row.append(f" {CELL_MISS} |")
+                    row.append(f" {CELL_MISS} │")
                 else:
-                    row.append(f" {CELL_UNKNOWN} |")
+                    row.append(f" {CELL_UNKNOWN} │")
         rows.append("".join(row))
-        rows.append(separator)
+        rows.append(middle if y < FIELD - 1 else bottom)
     return "<pre>" + "\n".join(rows) + "</pre>"
 
 
